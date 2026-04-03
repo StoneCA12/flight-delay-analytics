@@ -1,2 +1,2 @@
 # flight-delay-analytics
-Scalable airline delay analytics pipeline using CLI, Python, SQL, Tableau, and CI for automated analysis and visualization.
+Build a modular airline delay analytics pipeline that can ingest flight data, clean and transform it, analyze delay patterns, and produce outputs for SQL querying and Tableau dashboards.
