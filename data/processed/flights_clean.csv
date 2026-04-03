@@ -1,0 +1,6 @@
+carrier,airport,delay,month
+Air Canada,YVR,10,Jan
+WestJet,YYZ,5,Jan
+Air Canada,YYZ,20,Feb
+WestJet,YVR,30,Feb
+Air Canada,YVR,3,Mar
