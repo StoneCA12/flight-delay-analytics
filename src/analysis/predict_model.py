@@ -8,25 +8,24 @@ from config import PROCESSED_PATH
 
 
 def categorize_delay(delay):
-    """Convert delay minutes into a delay category."""
+    if pd.isna(delay):
+        return None
     if delay <= 5:
         return "On Time"
-    elif delay <= 15:
-        return "Minor"
-    elif delay <= 30:
-        return "Moderate"
+    elif 6 < delay <= 15:
+        return "Small Delay"
     else:
-        return "Severe"
+        return "Delayed"
 
 
 def prepare_features(df):
-    """Prepare features and labels for model training."""
     df = df.copy()
-
+    # Keep only rows with required values
+    df = df.dropna(subset=["carrier", "airport", "month", "delay"])
     # Create target label from delay column
     df["label"] = df["delay"].apply(categorize_delay)
-
-    # Select features
+    # Drop rows where label could not be created
+    df = df.dropna(subset=["label"])
     X = df[["carrier", "airport", "month"]].copy()
     y = df["label"]
 
@@ -43,21 +42,25 @@ def prepare_features(df):
 
 
 def train_model():
-    """Train and evaluate a simple delay prediction model."""
     print("Training model...")
-
     df = pd.read_csv(PROCESSED_PATH)
 
-    # Safety check
     if df.empty:
         print("No data available for training.")
         return None
 
     X, y, carrier_encoder, airport_encoder, month_encoder = prepare_features(df)
 
-    # If dataset is too small, train on all data and skip test split
-    if len(df) < 6:
-        print("Dataset is very small, training on full dataset without test split.")
+    if len(X) == 0:
+        print("No valid rows available for training after cleaning.")
+        return None
+
+    print(f"Total rows used for modeling: {len(X)}")
+    print("\nLabel distribution:")
+    print(y.value_counts())
+
+    if len(X) < 6 or y.nunique() < 2:
+        print("Dataset is too small or has only one class, training on full dataset without test split.")
         model = DecisionTreeClassifier(random_state=42)
         model.fit(X, y)
         print("Model trained.")
@@ -68,38 +71,33 @@ def train_model():
             "month_encoder": month_encoder,
         }
 
-    # Split data into train and test sets
     X_train, X_test, y_train, y_test = train_test_split(
         X,
         y,
         test_size=0.2,
         random_state=42,
-        stratify=y if y.nunique() > 1 else None
+        stratify=y
     )
 
-    # Train model
+    print(f"Training rows: {len(X_train)}")
+    print(f"Testing rows: {len(X_test)}")
+
     model = DecisionTreeClassifier(random_state=42)
     model.fit(X_train, y_train)
-
-    # Predict on test set
     y_pred = model.predict(X_test)
-
-    # Evaluate
     accuracy = accuracy_score(y_test, y_pred)
 
     print(f"Model accuracy: {accuracy:.2f}")
     print("\nClassification report:")
     print(classification_report(y_test, y_pred, zero_division=0))
 
-    # Show a few prediction examples
     results = pd.DataFrame({
         "actual": y_test.values,
         "predicted": y_pred
     })
 
-    print("Sample predictions:")
+    print("\nSample predictions:")
     print(results.head())
-
     print("Model trained.")
 
     return {
