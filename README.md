@@ -110,6 +110,6 @@ This is just to demonstrate how prediction can be added to the pipeline.
 ## Authors
 
 Bao Tran  
-Ahmed Maruf
+Mohiuddin Ahammad Maruf
 
 
