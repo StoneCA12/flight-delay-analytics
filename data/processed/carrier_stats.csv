@@ -1,0 +1,9 @@
+carrier,avg_delay,min_delay,max_delay,num_flights
+Flair Airlines,25.33,7,117,537
+Canadian North,23.69,7,100,175
+Air Transat,22.33,5,90,446
+PAL Airlines,22.28,6,93,257
+Jazz Aviation,21.99,4,101,362
+Air Canada,21.59,4,104,1373
+WestJet,20.29,3,99,1150
+Porter Airlines,19.99,2,101,700
