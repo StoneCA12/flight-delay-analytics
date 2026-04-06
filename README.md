@@ -35,8 +35,6 @@ If no API key is provided, the pipeline will use the sample dataset.
 
 python main.py
 
----
-
 ## What the pipeline does
 
 When you run the pipeline, it will:
